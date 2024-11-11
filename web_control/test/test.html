@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Serial API Example</title>
+    <link href="./style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <div>
+        <button id="connect">Connect</button>
+        <button id="disconnect">Disconnect</button>
+      </div>
+      <form id="terminal_form" action="#">
+        <label for="input">Enter command name:</label><br />
+        <div>
+          <input
+            id="input"
+            name="input"
+            placeholder="e.g led_toggle"
+            type="text"
+            disabled
+          />
+          <button name="send" type="submit" disabled>Send</button>
+        </div>
+      </form>
+      <textarea id="serial_log" placeholder=">" readonly></textarea>
+      <div id="port_info">
+        <div>
+          <p id="status">not connected</p>
+        </div>
+        <div>
+          <span>vendorId: <span id="vendor_id">-</span>&nbsp;|</span>
+          <span>deviceId: <span id="product_id">-</span></span>
+        </div>
+      </div>
+    </div>
+    <script defer src="./serial.js"></script>
+    <script defer src="./app.js"></script>
+  </body>
+</html>

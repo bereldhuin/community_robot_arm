@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="webserial.js"></script>
+  </head>
+  <body>
+    Hello world
+    <button id="btnConnect">Connect</button>
+    <button onclick="send()">Send</button>
+
+    <script>
+      // Function to open the serial port
+
+      async function openSerialPort() {
+        const port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 115200 });
+        return port;
+      }
+
+      // Function to send data and wait for response
+      async function sendDataAndWaitForResponse(port, data) {
+        const encoder = new TextEncoder();
+        const writer = port.writable.getWriter();
+        const decoder = new TextDecoder();
+        const reader = port.readable.getReader();
+        console.log("readable:" + (port.readable == true));
+        // Write the data to the port
+        await writer
+          .write(encoder.encode(data + "\r"))
+          .then(writer.releaseLock());
+        console.log("avant");
+        // Wait for a response
+        let response = "";
+        try {
+          while (true) {
+            // Wait for incoming data
+            console.log("hello");
+            const { value, done } = await reader.read();
+            console.log("v=" + value);
+
+            if (done) {
+              // Release the lock if reading is complete
+              reader.releaseLock();
+              break;
+            }
+            if (value) {
+              response += decoder.decode(value, { stream: true });
+              // Check if response contains a terminator character
+              if (response.includes("\r")) break; // Customize based on expected terminator
+            }
+          }
+        } catch (error) {
+          console.error("Error reading from serial port:", error);
+        }
+        console.log("ici");
+        reader.releaseLock();
+        return response.trim();
+      }
+
+      // Function to send multiple data items and wait for responses
+      async function sendMultipleData(port, dataArray) {
+        for (const data of dataArray) {
+          console.log(`Sending: ${data}`);
+          const response = await sendDataAndWaitForResponse(port, data);
+          console.log(`Received: ${response}`);
+        }
+      }
+
+      async function send() {
+        const dataToSend = ["1000", "100", "2000"]; // Replace with your data
+        const port = await openSerialPort();
+        await sendMultipleData(port, dataToSend);
+        await port.close();
+      }
+
+      /*
+      let waitForResponse = true;
+
+      function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+      function setup() {
+        webserial = new WebSerialPort();
+        if (webserial) {
+          webserial.on("data", serialRead);
+          // port open/close button:
+          btnConnect = document.getElementById("btnConnect");
+          btnConnect.addEventListener("click", openClosePort);
+        }
+      }
+
+      async function openClosePort() {
+        // label for the button will change depending on what you do:
+        let buttonLabel = "Open port";
+        // if port is open, close it; if closed, open it:
+        if (webserial.port) {
+          await webserial.closePort();
+        } else {
+          await webserial.openPort();
+          buttonLabel = "Close port";
+        }
+        // change button label:
+        btnConnect.innerHTML = buttonLabel;
+      }
+
+      async function serialRead(event) {
+        console.log(waitForResponse);
+        console.log(event.detail.data);
+        //waitForResponse = false;
+      }
+
+      async function send() {
+        datas = ["100", "200"];
+        //data = "1000";
+        for (const data of datas) {
+          console.log(data);
+          waitForResponse = true;
+          webserial.sendSerial(data);
+          await delay(1000);
+
+          //while (waitForResponse) {
+          //  console.log("w");
+          //}
+        }
+      }
+
+      // run the setup function when all the page is loaded:
+      document.addEventListener("DOMContentLoaded", setup);
+      */
+    </script>
+  </body>
+</html>

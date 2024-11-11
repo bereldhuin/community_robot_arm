@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robot Control Interface</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .control-btn {
+        width: 60px;
+        height: 60px;
+      }
+      .panel {
+        min-height: 300px;
+      }
+
+      .sequence-log {
+        min-height: 500px;
+      }
+
+      .dpad {
+        display: grid;
+        grid-template-columns: repeat(4, auto);
+        gap: 10px;
+        justify-items: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body class="container my-4">
+    <div class="row" id="app">
+      <!-- Left Panel -->
+      <div class="col-md-3">
+        <div class="panel p-3 border mb-3">
+          <h5>CMDs</h5>
+          <div id="status"></div>
+          <button class="btn btn-secondary btn-sm w-100 mb-2" id="btnConnect">
+            Connect
+          </button>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2"
+            id="btnDisconnect"
+          >
+            Disconnect
+          </button>
+          <button
+            class="btn btn-success btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="M17"
+            id="btnStepperOn"
+          >
+            Stepper ON (M17)
+          </button>
+          <button
+            class="btn btn-danger btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="M18"
+            id="btnStepperOff"
+          >
+            Stepper OFF (M18)
+          </button>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="M106"
+            id="btnFanOn"
+          >
+            Fan ON (M106)
+          </button>
+          <button
+            class="btn btn-secondary btn-sm w-100 btn-gcode"
+            data-gcode="M107"
+            id="btnFanOff"
+          >
+            Fan OFF (M107)
+          </button>
+        </div>
+        <div class="panel p-3 border mb-3">
+          <h5>Positions</h5>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="G90"
+            id="btnAbsolute"
+          >
+            Absolute (G90)
+          </button>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="G91"
+            id="btnRelative"
+          >
+            Relative (G91)
+          </button>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="G28"
+            id="btnHome"
+          >
+            HOME (G28)
+          </button>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="M114"
+            id="btnHome"
+          >
+            Report position (M114)
+          </button>
+        </div>
+        <div class="panel p-3 border">
+          <h5>Gripper</h5>
+          <div class="mb-2">
+            <button class="btn btn-secondary btn-sm" id="btnGripperOn">
+              Gripper ON
+            </button>
+            <select class="form-select form-select-sm d-inline w-auto ms-2">
+              <option>50</option>
+              <option>60</option>
+              <option>70</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn btn-secondary btn-sm" id="btnGripperOff">
+              Gripper OFF
+            </button>
+            <select class="form-select form-select-sm d-inline w-auto ms-2">
+              <option>50</option>
+              <option>60</option>
+              <option>70</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Panel for Direction Controls -->
+      <div class="col-md-3 text-center">
+        <div class="panel p-3 border">
+          <h5>Move</h5>
+          <!--
+          <div class="mb-3">
+            <label>Coarse</label>
+            <input
+              type="number"
+              class="form-control form-control-sm"
+              value="20"
+            />
+          </div>
+          <div class="mb-3">
+            <label>Fine</label>
+            <input
+              type="number"
+              class="form-control form-control-sm"
+              value="2"
+            />
+          </div>
+        -->
+          <div class="dpad">
+            <div></div>
+            <!-- Up Button -->
+            <button
+              class="btn btn-secondary control-btn btn-gcode"
+              data-gcode="G91;G0 Y10"
+              id="btnMoveYp"
+            >
+              Y+
+            </button>
+            <div></div>
+            <button
+              class="btn btn-primary control-btn btn-gcode"
+              data-gcode="G91;G0 Z10"
+              id="btnMoveZp"
+            >
+              Z+
+            </button>
+
+            <!-- Left Button -->
+            <button
+              class="btn btn-secondary control-btn btn-gcode"
+              data-gcode="G91;G0 X-10"
+              id="btnMoveXm"
+            >
+              X-
+            </button>
+            <!-- Center (Empty) -->
+            <div></div>
+            <!-- Right Button -->
+            <button
+              class="btn btn-secondary control-btn btn-gcode"
+              data-gcode="G91;G0 X10"
+              id="btnMoveXp"
+            >
+              X+
+            </button>
+
+            <div></div>
+            <div></div>
+            <!-- Down Button -->
+            <button
+              class="btn btn-secondary control-btn btn-gcode"
+              data-gcode="G91;G0 Y-10"
+              id="btnMoveYm"
+            >
+              Y-
+            </button>
+            <div></div>
+            <button
+              class="btn btn-primary control-btn btn-gcode"
+              data-gcode="G91;G0 Z-10"
+              id="btnMoveZm"
+            >
+              Z-
+            </button>
+          </div>
+        </div>
+        <div class="col">
+          <h5>Sequence</h5>
+          <textarea
+            class="form-control"
+            rows="8"
+            placeholder="G-code sequence..."
+            id="sequence"
+          ></textarea>
+          <button class="btn btn-secondary btn-sm" id="btnSequence">
+            SEND Sequence
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Panel for Sequence and Log -->
+      <div class="col-md-6">
+        <div class="panel p-3 border sequence-log">
+          <div class="row mb-3">
+            <div class="col">
+              <h5>Log</h5>
+              <textarea
+                class="form-control"
+                rows="15"
+                wrap="off"
+                placeholder="Log..."
+                id="serialLog"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <!--<button class="btn btn-secondary btn-sm">ADD Position</button>-->
+
+            <!--<button class="btn btn-primary btn-sm">SEND Line</button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="serial.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -97,8 +97,6 @@ function sendSequence() {
         console.log(gcode);
         addToLog(gcode + "\r");
         webserial.sendSerial(gcode);
-        //sleep(5000);
-        //serialRead();
     });
 
 
