@@ -24,8 +24,11 @@ class Application {
         this.$root = root;
         this.$connectButton = this.$root.querySelector("#btnConnect");
         this.$disconnectButton = this.$root.querySelector("#btnDisconnect");
-        //this.$terminalForm = this.$root.querySelector("#terminal_form");
-        this.btnsGcode = document.querySelectorAll(".btn-gcode");
+
+        this.$sequenceButton = this.$root.querySelector("#btnSequence");
+        this.$gcodeButtons = document.querySelectorAll(".btn-gcode");
+
+        this.$sequenceData = this.$root.querySelector("#sequence");
         this.$serialLog = this.$root.querySelector("#serialLog");
         this.$status = this.$root.querySelector("#status");
         //this.$vendorId = this.$root.querySelector("#vendor_id");
@@ -40,11 +43,14 @@ class Application {
     #setupEvents() {
         this.$connectButton.addEventListener("click", this.#connectHandler.bind(this));
         this.$disconnectButton.addEventListener("click", this.#disconnectHandler.bind(this));
-        //this.$terminalForm.addEventListener("submit", this.#submitHandler.bind(this));
 
-        this.btnsGcode.forEach(btnGcode => {
-            btnGcode.addEventListener('click', this.#submitGcode.bind(this));
+        this.$sequenceButton.addEventListener("click", this.#submitSequence.bind(this));
+
+        this.$gcodeButtons.forEach(gcodeButton => {
+            gcodeButton.addEventListener('click', this.#submitGcode.bind(this));
         });
+
+        this.$sequenceData.value = localStorage.getItem("sequence");
     }
 
 
@@ -84,13 +90,6 @@ class Application {
         this.$status.textContent = "NOT CONNECTED";
     }
 
-
-    async #submitGcode(e) {
-        const datas = e.target.dataset.gcode.split(";");
-        await this.#submitHandler(datas);
-    }
-
-
     /**
      * Writes data to the serial port and reads the response
      */
@@ -102,6 +101,7 @@ class Application {
 
         //const data = $form.elements.input.value;
         for (const data of datas) {
+            console.log(data);
             if (this.serialPortHandler.isOpened && data) {
 
                 this.$serialLog.innerHTML += ">" + data + "\r";
@@ -113,6 +113,28 @@ class Application {
             }
             this.$serialLog.scrollTo(0, this.$serialLog.scrollHeight);
         }
+    }
+
+
+    /**
+     * Send Gcodes associated to a button
+     */
+    async #submitGcode(e) {
+        const datas = e.target.dataset.gcode.split(";");
+        console.log(datas);
+        this.#submitHandler(datas);
+    }
+
+    /**
+     * Send sequence 
+     */
+    async #submitSequence() {
+
+        localStorage.setItem("sequence", this.$sequenceData.value);
+
+        const datas = this.$sequenceData.value.split("\n");
+        this.#submitHandler(datas);
+
     }
 }
 
