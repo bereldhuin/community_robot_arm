@@ -47,7 +47,7 @@ class SerialPortHandler {
                     const { value, done } = await reader.read();
                     const decoded = this.decoder.decode(value);
 
-                    //console.log("v=" + value + " / decoded=" + decoded + " / done=" + done + " / l=" + decoded.length);
+                    console.log("v=" + value + " / decoded=" + decoded + " / done=" + done + " / l=" + decoded.length);
 
                     chunks += decoded;
 

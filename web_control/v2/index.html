@@ -14,7 +14,7 @@
         height: 60px;
       }
       .panel {
-        min-height: 300px;
+        min-height: 100px;
       }
 
       .sequence-log {
@@ -108,26 +108,20 @@
         </div>
         <div class="panel p-3 border">
           <h5>Gripper</h5>
-          <div class="mb-2">
-            <button class="btn btn-secondary btn-sm" id="btnGripperOn">
-              Gripper ON
-            </button>
-            <select class="form-select form-select-sm d-inline w-auto ms-2">
-              <option>50</option>
-              <option>60</option>
-              <option>70</option>
-            </select>
-          </div>
-          <div>
-            <button class="btn btn-secondary btn-sm" id="btnGripperOff">
-              Gripper OFF
-            </button>
-            <select class="form-select form-select-sm d-inline w-auto ms-2">
-              <option>50</option>
-              <option>60</option>
-              <option>70</option>
-            </select>
-          </div>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="M3"
+            id="btnGripperOn"
+          >
+            Gripper ON (M3)
+          </button>
+          <button
+            class="btn btn-secondary btn-sm w-100 mb-2 btn-gcode"
+            data-gcode="M5"
+            id="btnGripperOff"
+          >
+            Gripper OFF (M5)
+          </button>
         </div>
       </div>
 
@@ -135,27 +129,8 @@
       <div class="col-md-3 text-center">
         <div class="panel p-3 border">
           <h5>Move</h5>
-          <!--
-          <div class="mb-3">
-            <label>Coarse</label>
-            <input
-              type="number"
-              class="form-control form-control-sm"
-              value="20"
-            />
-          </div>
-          <div class="mb-3">
-            <label>Fine</label>
-            <input
-              type="number"
-              class="form-control form-control-sm"
-              value="2"
-            />
-          </div>
-        -->
           <div class="dpad">
             <div></div>
-            <!-- Up Button -->
             <button
               class="btn btn-secondary control-btn btn-gcode"
               data-gcode="G91;G0 Y10"
@@ -171,8 +146,6 @@
             >
               Z+
             </button>
-
-            <!-- Left Button -->
             <button
               class="btn btn-secondary control-btn btn-gcode"
               data-gcode="G91;G0 X-10"
@@ -180,9 +153,7 @@
             >
               X-
             </button>
-            <!-- Center (Empty) -->
             <div></div>
-            <!-- Right Button -->
             <button
               class="btn btn-secondary control-btn btn-gcode"
               data-gcode="G91;G0 X10"
@@ -190,10 +161,8 @@
             >
               X+
             </button>
-
             <div></div>
             <div></div>
-            <!-- Down Button -->
             <button
               class="btn btn-secondary control-btn btn-gcode"
               data-gcode="G91;G0 Y-10"
