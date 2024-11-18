@@ -47,9 +47,15 @@ class SerialPortHandler {
                     const { value, done } = await reader.read();
                     const decoded = this.decoder.decode(value);
 
+                    console.log("v=" + value + " / decoded=" + decoded + " / done=" + done + " / l=" + decoded.length);
+
                     chunks += decoded;
 
-                    if (done || decoded.includes(EOT)) {
+                    // done always return true and the buffer is 32 chars
+                    // So if decoded string length = 32, we still have datas
+                    // unless we are at the end of a log line
+                    if (decoded.length < 32 || (decoded.length == 32 && decoded.slice(-2) == "\n\r")) {
+
                         console.log('Reading done.');
                         reader.releaseLock();
                         break;

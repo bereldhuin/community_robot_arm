@@ -108,7 +108,7 @@ class Application {
                 await this.serialPortHandler.write(data + "\r");
 
                 const message = await this.serialPortHandler.read();
-                this.$serialLog.textContent += message.replaceAll(EOT, "");
+                this.$serialLog.textContent += message;
                 console.log("Message received: \n" + message);
             }
             this.$serialLog.scrollTo(0, this.$serialLog.scrollHeight);
